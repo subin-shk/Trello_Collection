@@ -1,0 +1,2118 @@
+{
+	"info": {
+		"_postman_id": "c555a7d0-8bb5-4b95-a676-dac86e2170cb",
+		"name": "Trello API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34155719"
+	},
+	"item": [
+		{
+			"name": "Board",
+			"item": [
+				{
+					"name": "Make new board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData=pm.response.json()\r",
+									"\r",
+									"pm.test('response has property id', function(){\r",
+									"    pm.expect(jsonData).to.have.property('id')\r",
+									"})\r",
+									"\r",
+									"const idValue=jsonData.id\r",
+									"\r",
+									"pm.environment.set(\"BOARD_ID\", idValue);\r",
+									"\r",
+									"console.log(\"Extracted id:\", idValue);\r",
+									"\r",
+									"pm.test('response to have name eql to New Trello Board', function(){\r",
+									"    pm.expect(jsonData).to.have.property('name').that.is.eql('New Trello Board')\r",
+									"})\r",
+									"\r",
+									"pm.test('response have url that is string', function(){\r",
+									"    pm.expect(jsonData).to.have.property('url').that.is.a('string')\r",
+									"})\r",
+									"\r",
+									"pm.test(\"response to have 'permissionLevel' value is private \", function () {\r",
+									"    pm.expect(jsonData.prefs.permissionLevel).to.eql(\"private\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"response to have 'closed' is false\", function () {\r",
+									"    pm.expect(jsonData.closed).to.eql(false);\r",
+									"});\r",
+									"\r",
+									"pm.test('response has property labelNames', function(){\r",
+									"    pm.expect(jsonData).to.have.property('labelNames')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-skip-request",
+								"value": "x-skip-request",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards?key={{KEY}}&name=New Trello Board&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "name",
+									"value": "New Trello Board"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a  Board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"boardId=pm.environment.get(\"BOARD_ID\")\r",
+									"console.log(boardId)\r",
+									"\r",
+									"responseData=pm.response.json()\r",
+									"\r",
+									"pm.test(\"id is equal to the one set in environment variable\", function(){\r",
+									"    pm.expect(responseData.id).to.be.eql(boardId)\r",
+									"})\r",
+									"\r",
+									"pm.test('name to be \"New Trello Board\"',function(){\r",
+									"    pm.expect(responseData.name.trim()).to.eql('New Trello Board')\r",
+									"})\r",
+									"\r",
+									"pm.test('response header content type to be application/json', function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test('response to have property url', function(){\r",
+									"    pm.expect(responseData).to.have.property('url')\r",
+									"})\r",
+									"\r",
+									"pm.test('response url to be string', function(){\r",
+									"    pm.expect(responseData.url).to.be.a('string')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get field of board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response header content type to be application/json', function(){\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json')\r",
+									"})\r",
+									"\r",
+									"pm.test('status to be 200', function(){\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/labelNames?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"labelNames"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Actions of Board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    responseData.forEach((action)=>{\r",
+									"        pm.expect(action).to.have.property('id')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain idMemberCreator', function(){\r",
+									"    responseData.forEach((action)=>{\r",
+									"        pm.expect(action).to.have.property('idMemberCreator')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain board name equal to New Trello Board', function(){\r",
+									"    responseData.forEach((action)=>{\r",
+									"        pm.expect(action.data).to.have.property('board').that.have.property(\"name\").that.is.eql('New Trello Board')\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.test('response to have MemberCreator id', function(){\r",
+									"    responseData.forEach((action)=>{\r",
+									"        pm.expect(action.memberCreator).to.have.property('id')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to have MemberCreator avatarUrl', function(){\r",
+									"    responseData.forEach((action)=>{\r",
+									"        pm.expect(action.memberCreator).to.have.property('avatarUrl')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to have MemberCreator fullName', function(){\r",
+									"    responseData.forEach((action)=>{\r",
+									"        pm.expect(action.memberCreator).to.have.property('fullName')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to have MemberCreator username', function(){\r",
+									"    responseData.forEach((action)=>{\r",
+									"        pm.expect(action.memberCreator).to.have.property('username')\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/actions?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"actions"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BoardStars of the board",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/boardStars?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"boardStars"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get filtered cards on board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response header content type to be application/json', function(){\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json')\r",
+									"})\r",
+									"\r",
+									"pm.test('status to be 200', function(){\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    responseData.forEach((card)=>{\r",
+									"        pm.expect(card).to.have.property('id')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain badges', function(){\r",
+									"    responseData.forEach((card)=>{\r",
+									"        pm.expect(card).to.have.property('badges')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain closed', function(){\r",
+									"    responseData.forEach((card)=>{\r",
+									"        pm.expect(card).to.have.property('closed').that.is.eql(false)\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain desc', function(){\r",
+									"    responseData.forEach((card)=>{\r",
+									"        pm.expect(card).to.have.property('desc')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain dueComplete', function(){\r",
+									"    responseData.forEach((card)=>{\r",
+									"        pm.expect(card).to.have.property('dueComplete')\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/cards/all?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"cards",
+								"all"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a list on board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response header content type to be application/json', function(){\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json')\r",
+									"})\r",
+									"\r",
+									"pm.test('status to be 200', function(){\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response have id',function()\r",
+									"{\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('response have name',function()\r",
+									"{\r",
+									"    pm.expect(responseData).to.have.property('name')\r",
+									"})\r",
+									"\r",
+									"pm.test('name to equal completed', function(){\r",
+									"    pm.expect(responseData.name).to.be.eql('Completed')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Completed\",\r\n    \"pos\":\"bottom\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/lists?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"lists"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get list from board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('to have id', function(){\r",
+									"    responseData.forEach((list, index)=>{\r",
+									"        pm.expect(list).to.have.property('id')\r",
+									"\r",
+									"// keep id of list on new variable in environment\r",
+									"        pm.environment.set(`LIST_ID_${index+1}`, list.id)\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"pm.test('response to have id', function(){\r",
+									"    responseData.forEach((list)=>{\r",
+									"        pm.expect(list).to.have.property('id')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to have name', function(){\r",
+									"    responseData.forEach((list)=>{\r",
+									"        pm.expect(list).to.have.property('name')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to have color', function(){\r",
+									"    responseData.forEach((list)=>{\r",
+									"        pm.expect(list).to.have.property('color')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to have closed as false', function(){\r",
+									"    responseData.forEach((list)=>{\r",
+									"        pm.expect(list).to.have.property('closed').that.is.eql(false)\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/lists?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"lists"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invite member to a board via email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('reponse to have id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('reponse to have id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('reponse to have member avatarUrl', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('reponse to have member username', function(){\r",
+									"    pm.expect(responseData).to.have.property('username')\r",
+									"})\r",
+									"pm.test('reponse to have member fullName', function(){\r",
+									"    pm.expect(responseData).to.have.property('fullName')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"aarzuawal@gmail.com\",\n    \"type\":\"observer\",\n    \"fullName\":\"Aarju Awal\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1//boards/{{BOARD_ID}}/members?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"",
+								"boards",
+								"{{BOARD_ID}}",
+								"members"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Membership of Board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Response status to be 200', function(){\r",
+									"    pm.expect(pm.response).to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('Response to contain property id',function(){\r",
+									"    responseData.forEach((membership,index)=>{\r",
+									"        pm.expect(membership).to.have.property('id')\r",
+									"\r",
+									"        pm.environment.set(`MEMBER_${index+1}_ID`, membership.id)\r",
+									"    })\r",
+									"})\r",
+									"pm.test('Response to contain property idMember',function(){\r",
+									"    responseData.forEach((membership,index)=>{\r",
+									"        pm.expect(membership).to.have.property('idMember')\r",
+									"        pm.environment.set(`ID_MEMBER_${index+1}`, membership.idMember)\r",
+									"    })\r",
+									"})\r",
+									"pm.test('Response to contain property memberType',function(){\r",
+									"    responseData.forEach((membership)=>{\r",
+									"        pm.expect(membership).to.have.property('memberType')\r",
+									"        \r",
+									"    })\r",
+									"})\r",
+									"pm.test('Response to contain property unconfirmed',function(){\r",
+									"    responseData.forEach((membership)=>{\r",
+									"        pm.expect(membership).to.have.property('unconfirmed')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('Response to contain property deactivated',function(){\r",
+									"    responseData.forEach((membership)=>{\r",
+									"        pm.expect(membership).to.have.property('deactivated')\r",
+									"    })\r",
+									"})\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/memberships?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"memberships"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update membership of member on baord",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"// pm.test(\"memberType to be observer\",function(){\r",
+									"//     pm.expect(responseData.memberType).to.eql(\"observer\")\r",
+									"// })\r",
+									"pm.test(\"memberType to be normal\",function(){\r",
+									"    pm.expect(responseData.memberType).to.eql(\"normal\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\":\"normal\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/memberships/{{MEMBER_2_ID}}?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"memberships",
+								"{{MEMBER_2_ID}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Card",
+			"item": [
+				{
+					"name": "Create Card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response header content type to be application/json', function(){\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json')\r",
+									"})\r",
+									"\r",
+									"pm.test('status to be 200', function(){\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to have property closed as false', function(){\r",
+									"    pm.expect(responseData).to.have.property('closed').that.is.eql(false);\r",
+									"})\r",
+									"\r",
+									"pm.test('response to have property id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"fifth card from api\",\r\n    \"desc\":\"fifth card\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards?idList={{LIST_ID_1}}&key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "idList",
+									"value": "{{LIST_ID_1}}"
+								},
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cards on board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response have id property', function () {\r",
+									"    responseData.forEach((card, index) => {\r",
+									"     pm.expect(card).to.have.property('id');\r",
+									"\r",
+									"    //  Keep card id in environment variable\r",
+									"\r",
+									"    pm.environment.set(`CARD_ID_${index+1}`, card.id)\r",
+									"    });\r",
+									"})\r",
+									"\r",
+									"pm.test('response to have property idBoard', function(){\r",
+									"    responseData.forEach((card)=>{\r",
+									"        pm.expect(card).to.have.property('idBoard')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to have property idList', function(){\r",
+									"    responseData.forEach((card)=>{\r",
+									"        pm.expect(card).to.have.property('idList')\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/boards/{{BOARD_ID}}/cards?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{BOARD_ID}}",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to have property name that is equal to \"edited card', function(){\r",
+									"    pm.expect(responseData).to.have.property('name').that.is.eql('edited card')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"edited card\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_2}}?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_2}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a new comment to the card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('comment to be new comment', function(){\r",
+									"    pm.expect(responseData.data.text.trim()).to.be.eql('new comment!')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\":\"new comment!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_2}}/actions/comments?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_2}}",
+								"actions",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move card from one list to another",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const listID=pm.environment.get(\"LIST_ID_2\")\r",
+									"\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response listid to be eql to list id in query params', function(){\r",
+									"    pm.expect(responseData.idList).to.eql(listID)\r",
+									"})\r",
+									"\r",
+									"pm.test('response to have idBoard', function(){\r",
+									"    pm.expect(responseData).to.have.property('idBoard')\r",
+									"})\r",
+									"\r",
+									"\r",
+									"pm.test('response to have id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id').that.is.a('string')\r",
+									"})\r",
+									"\r",
+									"pm.test('response to have badges', function(){\r",
+									"    pm.expect(responseData).to.have.property('badges')\r",
+									"})\r",
+									"pm.test('response to have id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id').that.is.a('string')\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_1}}?idList={{LIST_ID_2}}&key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_1}}"
+							],
+							"query": [
+								{
+									"key": "idList",
+									"value": "{{LIST_ID_2}}"
+								},
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark card as complete and move to done",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to have property dueComplete to be set as true', function(){\r",
+									"    pm.expect(responseData.dueComplete).to.eql(true)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_3}}?dueComplete=true&idList={{LIST_ID_3}}&key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_3}}"
+							],
+							"query": [
+								{
+									"key": "dueComplete",
+									"value": "true"
+								},
+								{
+									"key": "idList",
+									"value": "{{LIST_ID_3}}"
+								},
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create attachment on card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('response to contain date', function(){\r",
+									"    pm.expect(responseData).to.have.property('date')\r",
+									"})\r",
+									"pm.test('response to contain fileName', function(){\r",
+									"    pm.expect(responseData).to.have.property('fileName')\r",
+									"})\r",
+									"pm.test('response to contain isUpload to be true', function(){\r",
+									"    pm.expect(responseData).to.have.property('isUpload').that.is.eql(true)\r",
+									"})\r",
+									"pm.test('response to contain name', function(){\r",
+									"    pm.expect(responseData).to.have.property('name').that.is.eql('cover first card attachment')\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"cover first card attachment\",\r\n    \"url\":\"https://images.unsplash.com/photo-1741732311869-098397c9d19c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D\",\r\n    \"setCover\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_1}}/attachments?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_1}}",
+								"attachments"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get attachments from card",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_1}}/attachments?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_1}}",
+								"attachments"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create checklist on card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const cardID=pm.environment.get('CARD_ID_1')\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response idCard to eql cardid in query params',function(){\r",
+									"    pm.expect(responseData).to.have.property('idCard').that.is.eql(cardID)\r",
+									"})\r",
+									"\r",
+									"pm.test('response to have id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('response to have idBoard', function(){\r",
+									"    pm.expect(responseData).to.have.property('idBoard')\r",
+									"})\r",
+									"pm.test('response to have name', function(){\r",
+									"    pm.expect(responseData).to.have.property('name').that.is.eql('checklist1')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"checklist1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_1}}/checklists?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_1}}",
+								"checklists"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new label on a card",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"color\":\"blue_light\",\r\n    \"name\":\"blue_light\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_1}}/idLabels?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_1}}",
+								"idLabels"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Sticker on a card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('response to contain top', function(){\r",
+									"    pm.expect(responseData).to.have.property('top').that.is.eql(10)\r",
+									"})\r",
+									"pm.test('response to contain left', function(){\r",
+									"    pm.expect(responseData).to.have.property('left').that.is.eql(10)\r",
+									"})\r",
+									"pm.test('response to contain zIndex', function(){\r",
+									"    pm.expect(responseData).to.have.property('zIndex').that.is.eql(1)\r",
+									"})\r",
+									"pm.test('response to contain image', function(){\r",
+									"    pm.expect(responseData).to.have.property('image').that.is.eql(\"taco-cool\")\r",
+									"})\r",
+									"pm.test('response to contain imageUrl', function(){\r",
+									"    pm.expect(responseData).to.have.property('imageUrl')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"image\":\"taco-cool\",\r\n    \"top\":10,\r\n    \"left\":10,\r\n    \"zIndex\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_2}}/stickers?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_2}}",
+								"stickers"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add member to card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    responseData.forEach((member)=>{\r",
+									"     pm.expect(member).to.have.property('id')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain avatarUrl', function(){\r",
+									"    responseData.forEach((member)=>{\r",
+									"    pm.expect(member).to.have.property('avatarUrl')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain fullName', function(){\r",
+									"   responseData.forEach((member)=>{\r",
+									"    pm.expect(member).to.have.property('fullName')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain username', function(){\r",
+									"   responseData.forEach((member)=>{\r",
+									"    pm.expect(member).to.have.property('username')\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_2}}/idMembers?key={{KEY}}&token={{TOKEN}}&value={{ID_MEMBER_2}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_2}}",
+								"idMembers"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								},
+								{
+									"key": "value",
+									"value": "{{ID_MEMBER_2}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add member vote to a card",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_1}}/membersVoted?key={{KEY}}&token={{TOKEN}}&value={{ID_MEMBER_1}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_1}}",
+								"membersVoted"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								},
+								{
+									"key": "value",
+									"value": "{{ID_MEMBER_1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a label to a card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is an array', function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/cards/{{CARD_ID_4}}/idLabels?key={{KEY}}&token={{TOKEN}}&value=67dcde953c9d3785b675e4fd",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"cards",
+								"{{CARD_ID_4}}",
+								"idLabels"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								},
+								{
+									"key": "value",
+									"value": "67dcde953c9d3785b675e4fd"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Emoji",
+			"item": [
+				{
+					"name": "List available emoji",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is JSON', function () {\r",
+									"    pm.expect(pm.response).to.be.json;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/emoji",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"emoji"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Members",
+			"item": [
+				{
+					"name": "upload new board background for member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test('response type to be custom', function(){\r",
+									"    pm.expect(responseData).to.have.property('type').that.is.eql('custom')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{TOKEN}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "{{KEY}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "bluewp.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/members/{{ID_MEMBER_1}}/boardBackgrounds?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"members",
+								"{{ID_MEMBER_1}}",
+								"boardBackgrounds"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Member's custom board background",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    responseData.forEach((board)=>{\r",
+									"        pm.expect(board).to.have.property('id')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain type', function(){\r",
+									"    responseData.forEach((board)=>{\r",
+									"        pm.expect(board).to.have.property('type')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain tile', function(){\r",
+									"    responseData.forEach((board)=>{\r",
+									"        pm.expect(board).to.have.property('tile')\r",
+									"    })\r",
+									"})\r",
+									"pm.test('response to contain brightness', function(){\r",
+									"    responseData.forEach((board)=>{\r",
+									"        pm.expect(board).to.have.property('brightness')\r",
+									"    })\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/members/{{ID_MEMBER_1}}/boardBackgrounds?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"members",
+								"{{ID_MEMBER_1}}",
+								"boardBackgrounds"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Member's custom Board background",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test('Status code is 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is JSON', function () {\r",
+									"    pm.expect(pm.response).to.be.json;\r",
+									"});\r",
+									"\r",
+									"pm.test('response to contain id', function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"\r",
+									"pm.test('response to contain brightness', function(){\r",
+									"    pm.expect(responseData).to.have.property('brightness')\r",
+									"})\r",
+									"\r",
+									"pm.test('response type to be custom', function(){\r",
+									"    pm.expect(responseData).to.have.property('type').that.is.eql('custom')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/members/{{ID_MEMBER_1}}/boardBackgrounds/67dd283e28751271abd528ab?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"members",
+								"{{ID_MEMBER_1}}",
+								"boardBackgrounds",
+								"67dd283e28751271abd528ab"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Checklists",
+			"item": [
+				{
+					"name": "Create a checklist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is JSON', function () {\r",
+									"    pm.expect(pm.response).to.be.json;\r",
+									"});\r",
+									"\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.environment.set(\"CHECKLIST_ID\", responseData.id)\r",
+									"\r",
+									"pm.test(\"response contains id\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"id\")\r",
+									"})\r",
+									"pm.test(\"response contains idBoard\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"idBoard\")\r",
+									"})\r",
+									"pm.test(\"response contains idCard\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"idCard\")\r",
+									"})\r",
+									"pm.test(\"response contains name\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"name\").that.is.eql(\"new checklist\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"new checklist\",\r\n    \"pos\":\"top\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/checklists?idCard={{CARD_ID_1}}&key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"checklists"
+							],
+							"query": [
+								{
+									"key": "idCard",
+									"value": "{{CARD_ID_1}}"
+								},
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get checklists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is JSON', function () {\r",
+									"    pm.expect(pm.response).to.be.json;\r",
+									"});\r",
+									"\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test(\"response contains id\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"id\")\r",
+									"})\r",
+									"pm.test(\"response contains idBoard\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"idBoard\")\r",
+									"})\r",
+									"pm.test(\"response contains idCard\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"idCard\")\r",
+									"})\r",
+									"pm.test(\"response contains name\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"name\").that.is.eql(\"new checklist\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/checklists/{{CHECKLIST_ID}}?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"checklists",
+								"{{CHECKLIST_ID}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get field on checklist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Response is JSON', function () {\r",
+									"    pm.expect(pm.response).to.be.json;\r",
+									"});\r",
+									"\r",
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test(\"response contains id\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"id\")\r",
+									"})\r",
+									"pm.test(\"response contains idBoard\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"idBoard\")\r",
+									"})\r",
+									"pm.test(\"response contains idCard\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"idCard\")\r",
+									"})\r",
+									"pm.test(\"response contains name\", function(){\r",
+									"    pm.expect(responseData).to.have.property(\"name\").that.is.eql(\"new checklist\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/1/checklists/{{CHECKLIST_ID}}?field=name&key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"checklists",
+								"{{CHECKLIST_ID}}"
+							],
+							"query": [
+								{
+									"key": "field",
+									"value": "name"
+								},
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create checkitem on checklist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData=pm.response.json()\r",
+									"\r",
+									"pm.test(\"response contain id\", function(){\r",
+									"    pm.expect(responseData).to.have.property('id')\r",
+									"})\r",
+									"pm.test(\"response contain name\", function(){\r",
+									"    pm.expect(responseData).to.have.property('name').to.eql(\"demo checkitem\")\r",
+									"})\r",
+									"pm.test(\"response contain pos\", function(){\r",
+									"    pm.expect(responseData).to.have.property('pos')\r",
+									"})\r",
+									"pm.test(\"response contain state as complete\", function(){\r",
+									"    pm.expect(responseData).to.have.property('state').to.eql('complete')\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"demo checkitem\",\r\n    \"pos\":\"top\",\r\n    \"checked\":\"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/1/checklists/{{checklistID}}/checkItems?key={{KEY}}&token={{TOKEN}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"checklists",
+								"{{checklistID}}",
+								"checkItems"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
