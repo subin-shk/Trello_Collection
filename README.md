@@ -1,4 +1,4 @@
-### Trello Postman API Collection
+# Trello Postman API Collection
 
 
 ## Before running test requests make sure to create New Environment and keep the environment variables as follow: 
